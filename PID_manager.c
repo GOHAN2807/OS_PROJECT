@@ -30,3 +30,31 @@ int allocate_map(void)
 	else
 	return -1;
 }
+void release_pid(int pid)
+{
+	int i;
+	for(i = 0;i <=900; i++)
+	{
+		if(pArr[i].pid == pid)
+		{
+			pArr[i].bitmap = 0;
+			break;
+		}
+	}
+}
+
+void* threadFunc(void* arg)
+{
+	int PID = allocate_pid();
+	while(tVar <100)
+	{
+		pthread_mutex_lock(&lock);
+		tVar++;
+		Sleep(100);
+		printf("\nThread no : %d",tVar);
+		printf("\nProcess Id : %d",PID);
+		pthread_mutex_unlock(&lock);
+		break;
+	}
+	release_pid(PID);
+}
