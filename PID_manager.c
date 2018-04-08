@@ -47,20 +47,33 @@ void* threadFunc(void* arg)
 	int PID = allocate_pid();
 	while(tVar <100)
 	{
+		pthread_mutex_lock(&lock);
 		tVar++;
 		Sleep(100);
 		printf("\nThread no : %d",tVar);
 		printf("\nProcess Id : %d",PID);
+		pthread_mutex__unlock(&lock);
 		break;
 	}
 	release_pid(PID);
 }
 int main()
 {
+	int map = allocate_map();
+	if(map == -1)
+	{
+		printf("\nBitmap Data Structure can't be initialized.");
+		return;
+	}
+	if(map == 1)
+	{
+		printf("\nBitmap Data Structure initialized.");	
+	}
 	pthread_t threads[100];
 	int thread_args[100];
 	int result_code;
 	int index;
+	pthread_mutex_init(&lock,NULL);
 	
 	for(index = 0;index < 100;++index)
 	{
