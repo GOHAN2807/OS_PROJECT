@@ -1,5 +1,4 @@
 #include<stdbool.h>
-#include <pthread.h>
 #include <stdio.h>
 #include <assert.h>
 
@@ -48,13 +47,32 @@ void* threadFunc(void* arg)
 	int PID = allocate_pid();
 	while(tVar <100)
 	{
-		pthread_mutex_lock(&lock);
 		tVar++;
 		Sleep(100);
 		printf("\nThread no : %d",tVar);
 		printf("\nProcess Id : %d",PID);
-		pthread_mutex_unlock(&lock);
 		break;
 	}
 	release_pid(PID);
+}
+int main()
+{
+	pthread_t threads[100];
+	int thread_args[100];
+	int result_code;
+	int index;
+	
+	for(index = 0;index < 100;++index)
+	{
+		thread_args[index]=index+1;
+		printf("\nCreation of thread %d",index+1);
+		result_code = pthread_create(&threads[index],NULL,threadFunc, &thread_args[index]);
+		assert(!result_code);
+	}
+	for(index = 0;index <100;++index)
+	{
+		result_code = pthread_join(threads[index],NULL);
+		printf("\nThread No. : %d has completed ",index+1);
+	}
+	return 0;
 }
