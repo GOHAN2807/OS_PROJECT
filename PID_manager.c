@@ -83,7 +83,7 @@ void* threadFunc(void* arg)
 		Sleep(100);
 		printf("\nThread no : %d",tVar);
 		printf("\nProcess Id : %d",PID);
-		pthread_mutex__unlock(&lock);
+		pthread_mutex_unlock(&lock);
 		break;
 	}
 	release_pid(PID);
