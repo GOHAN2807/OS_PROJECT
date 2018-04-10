@@ -6,7 +6,7 @@
 #define PID_MIN 100
 #define PID_MAX 1000
 
-int tVar = 0;
+int tVar = 0,i=0;
 int last;
 pthread_mutex_t lock;
 
@@ -44,8 +44,8 @@ int allocate_pid(void)
 	while ( (n_loops <= (PID_MAX - PID_MIN)) && (pArr[next].bitmap == 1) ) {	
 		++n_loops;
 		++next;
-		if (next > PID_MAX)
-			next = PID_MIN;
+		if (next > PID_MAX-100)
+			next = PID_MIN-100;
 	}
 
 	if (n_loops == (PID_MAX - PID_MIN) + 1) {
@@ -63,7 +63,7 @@ int allocate_pid(void)
 void release_pid(int pid)
 {
 	int i;
-	for(i = 0;i <=900; i++)
+	for(i = 0;i <=901; i++)
 	{
 		if(pArr[i].pid == pid)
 		{
@@ -76,7 +76,7 @@ void release_pid(int pid)
 void* threadFunc(void* arg)
 {
 	int PID = allocate_pid();
-	while(tVar <100)
+	while(tVar <i)
 	{
 		pthread_mutex_lock(&lock);
 		tVar++;
@@ -90,6 +90,8 @@ void* threadFunc(void* arg)
 }
 int main()
 {
+	printf("Enter the Number of Threads to run : \n");
+	scanf("%d",&i);
 	int map = allocate_map();
 	if(map == -1)
 	{
@@ -100,20 +102,20 @@ int main()
 	{
 		printf("\nBitmap Data Structure initialized.");	
 	}
-	pthread_t threads[100];
-	int thread_args[100];
+	pthread_t threads[i];
+	int thread_args[i];
 	int result_code;
 	int index;
 	pthread_mutex_init(&lock,NULL);
 	
-	for(index = 0;index < 100;++index)
+	for(index = 0;index < i;++index)
 	{
 		thread_args[index]=index+1;
 		printf("\nCreation of thread %d",index+1);
 		result_code = pthread_create(&threads[index],NULL,threadFunc, &thread_args[index]);
 		assert(!result_code);
 	}
-	for(index = 0;index <100;++index)
+	for(index = 0;index <i;++index)
 	{
 		result_code = pthread_join(threads[index],NULL);
 		printf("\nThread No. : %d has completed ",index+1);
